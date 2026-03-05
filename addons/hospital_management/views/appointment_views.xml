@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Sequence for appointment reference -->
+    <record id="seq_appointment" model="ir.sequence">
+        <field name="name">Appointment Sequence</field>
+        <field name="code">hospital.appointment</field>
+        <field name="prefix">APP/</field>
+        <field name="padding">3</field>
+        <field name="number_increment">1</field>
+    </record>
+
+    <!-- List view -->
+    <record id="view_appointment_list" model="ir.ui.view">
+        <field name="name">hospital.appointment.list</field>
+        <field name="model">hospital.appointment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="date"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view – with statusbar and conditional buttons (new syntax) -->
+    <record id="view_appointment_form" model="ir.ui.view">
+        <field name="name">hospital.appointment.form</field>
+        <field name="model">hospital.appointment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <!-- Status bar (visual + clickable if allowed) -->
+                    <field name="state" widget="statusbar" clickable="1"/>
+
+                    <!-- Workflow buttons: conditional visibility with direct expressions -->
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_done" string="Mark as Done" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state in ['cancel', 'done']"/>
+                    <button name="action_draft" string="Reset to Draft" type="object" invisible="state != 'cancel'"/> <!-- Optional reset -->
+                </header>
+                <sheet>
+                    <group>
+                        <field name="reference" readonly="1"/>
+                        <field name="patient_id"/>
+                        <field name="doctor_id"/>
+                        <field name="date"/>
+                        <field name="state" invisible="1"/> <!-- Hidden, statusbar handles display -->
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_appointment" model="ir.actions.act_window">
+        <field name="name">Appointments</field>
+        <field name="res_model">hospital.appointment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>
