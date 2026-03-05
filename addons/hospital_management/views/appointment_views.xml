@@ -19,6 +19,7 @@
                 <field name="reference"/>
                 <field name="patient_id"/>
                 <field name="doctor_id"/>
+                <field name="department_id"/>
                 <field name="date"/>
                 <field name="state" widget="badge"/>
             </list>
@@ -46,6 +47,7 @@
                         <field name="reference" readonly="1"/>
                         <field name="patient_id"/>
                         <field name="doctor_id"/>
+                        <field name="department_id" readonly="1"/>
                         <field name="date"/>
                         <field name="state" invisible="1"/> <!-- Hidden, statusbar handles display -->
                         <field name="notes"/>

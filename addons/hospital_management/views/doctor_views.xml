@@ -9,6 +9,7 @@
             <list>
                 <field name="name"/>
                 <field name="specialty"/>
+                <field name="department_id"/>
             </list>
         </field>
     </record>
@@ -23,6 +24,7 @@
                     <group>
                         <field name="name"/>
                         <field name="specialty"/>
+                        <field name="department_id"/>
                     </group>
                 </sheet>
             </form>

@@ -1,4 +1,4 @@
-# Import each model file.
+from . import department
 from . import patient
 from . import doctor
 from . import appointment

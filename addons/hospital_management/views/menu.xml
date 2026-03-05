@@ -7,6 +7,13 @@
     <menuitem id="menu_patients" name="Patients" parent="menu_hospital_root" action="action_patient" sequence="1"/>
     <menuitem id="menu_doctors" name="Doctors" parent="menu_hospital_root" action="action_doctor" sequence="2"/>
     <menuitem id="menu_appointments" name="Appointments" parent="menu_hospital_root" action="action_appointment" sequence="3"/>
+    <menuitem
+    id="menu_departments"
+    name="Departments"
+    parent="menu_hospital_root"
+    action="action_department"
+    sequence="4"/>
 </odoo>
 
 
+ 

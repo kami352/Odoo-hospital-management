@@ -10,7 +10,17 @@ class Appointment(models.Model):
     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
     doctor_id = fields.Many2one('hospital.doctor', string='Doctor', required=True)
     date = fields.Datetime(string='Date', default=fields.Datetime.now)
+
+    # Add inside Appointment class
+    department_id = fields.Many2one(
+    'hospital.department',
+    string='Department',
+    related='doctor_id.department_id',
+    store=True,           # optional: store for searching/filtering
+    readonly=True
+)  
     notes = fields.Text(string='Notes')
+
 
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -18,6 +28,8 @@ class Appointment(models.Model):
         ('done', 'Done'),
         ('cancel', 'Cancelled'),
     ], string='Status', default='draft', required=True, tracking=True)
+
+    
 
     @api.model
     def create(self, vals):

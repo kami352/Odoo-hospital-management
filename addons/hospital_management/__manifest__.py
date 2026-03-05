@@ -11,6 +11,7 @@
         'views/patient_views.xml',
         'views/doctor_views.xml',
         'views/appointment_views.xml',
+        'views/department_views.xml',
         'views/menu.xml',  # Menus last, as they reference views.
     ],
     'installable': True,
