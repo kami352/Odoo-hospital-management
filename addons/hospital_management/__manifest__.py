@@ -7,13 +7,14 @@
     'author': 'Your Name',
     'depends': ['base'],  # Depends on Odoo's base module (always needed).
     'data': [
-        'security/ir.model.access.csv',  # Load security first.
-        'views/patient_views.xml',
-        'views/doctor_views.xml',
-        'views/appointment_views.xml',
-        'views/department_views.xml',
-        'views/menu.xml',  # Menus last, as they reference views.
-    ],
+    'security/ir.model.access.csv',
+    'views/patient_views.xml',
+    'views/doctor_views.xml',
+    'views/appointment_views.xml',
+    'views/department_views.xml',
+   'reports/appointment_report.xml',
+    'views/menu.xml',
+],
     'installable': True,
     'application': True,
     'auto_install': False,

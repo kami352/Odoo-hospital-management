@@ -1,4 +1,5 @@
 from odoo import fields, models, api
+from odoo.exceptions import ValidationError  # ← ADD THIS LINE
 
 class Appointment(models.Model):
     _name = 'hospital.appointment'
@@ -11,6 +12,13 @@ class Appointment(models.Model):
     doctor_id = fields.Many2one('hospital.doctor', string='Doctor', required=True)
     date = fields.Datetime(string='Date', default=fields.Datetime.now)
 
+    cancel_reason = fields.Text(string='Cancellation Reason')
+    cancelled_by_id = fields.Many2one('res.users', string='Cancelled By', readonly=True)
+    cancelled_date = fields.Datetime(string='Cancelled On', readonly=True)
+
+    prescription = fields.Html(string='Prescription')
+    treatment_notes = fields.Html(string='Treatment Notes')
+
     # Add inside Appointment class
     department_id = fields.Many2one(
     'hospital.department',
@@ -20,6 +28,11 @@ class Appointment(models.Model):
     readonly=True
 )  
     notes = fields.Text(string='Notes')
+
+    prescription = fields.Html(
+    string='Prescription',
+    help="Doctor's prescription or medication instructions"
+)
 
 
     state = fields.Selection([
@@ -53,3 +66,5 @@ class Appointment(models.Model):
     def action_draft(self):
         self.write({'state': 'draft'})
         return True
+    
+    

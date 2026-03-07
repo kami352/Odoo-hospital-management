@@ -7,10 +7,12 @@
         <field name="model">hospital.patient</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name"/>
-                <field name="age"/>
-                <field name="gender"/>
-            </list>
+             <field name="name"/>
+             <field name="phone"/>
+             <field name="email"/>
+             <field name="age"/>
+             <field name="gender"/>
+           </list>
         </field>
     </record>
 
@@ -21,55 +23,59 @@
         <field name="arch" type="xml">
 
             <form>
-                <sheet>
+              <sheet>
+    <!-- Smart button box stays the same -->
+    <div class="oe_button_box" name="button_box">
+        <button name="action_view_appointments" type="object" class="oe_stat_button" icon="fa-calendar">
+            <field name="appointment_count" widget="statinfo" string="Appointments"/>
+        </button>
+    </div>
 
-                    <!-- SMART BUTTON BOX -->
-                    <div class="oe_button_box" name="button_box">
+    <!-- Two-column layout – THIS IS THE FIX -->
+    <group col="2">
+        <!-- Left column -->
+        <group string="Personal Information">
+            <field name="name"/>
+            <field name="age"/>
+            <field name="gender"/>
+            <field name="phone"/>
+            <field name="mobile"/>
+            <field name="email"/>
+        </group>
 
-                        <button name="action_view_appointments"
-                                type="object"
-                                class="oe_stat_button"
-                                icon="fa-calendar">
+        <!-- Right column -->
+        <group string="Address">
+            <field name="street"/>
+            <field name="street2"/>
+            <field name="city"/>
+            <field name="zip"/>
+            <field name="country_id"/>
+        </group>
+    </group>
 
-                            <field name="appointment_count"
-                                   widget="statinfo"
-                                   string="Appointments"/>
-
-                        </button>
-
-                    </div>
-
-                    <!-- Normal Fields -->
+    <!-- Notebook / Appointments tab -->
+    <notebook>
+        <page string="Appointments">
+            <field name="appointment_ids">
+                <list editable="bottom">
+                    <field name="reference"/>
+                    <field name="doctor_id"/>
+                    <field name="date"/>
+                    <field name="state" widget="badge"/>
+                </list>
+                <form>
                     <group>
-                        <field name="name"/>
-                        <field name="age"/>
-                        <field name="gender"/>
+                        <field name="reference"/>
+                        <field name="doctor_id"/>
+                        <field name="date"/>
+                        <field name="state"/>
+                        <field name="notes"/>
                     </group>
-
-                    <!-- Notebook -->
-                    <notebook>
-                        <page string="Appointments">
-                            <field name="appointment_ids">
-                                <list editable="bottom">
-                                    <field name="reference"/>
-                                    <field name="doctor_id"/>
-                                    <field name="date"/>
-                                    <field name="state" widget="badge"/>
-                                </list>
-                                <form>
-                                    <group>
-                                        <field name="reference"/>
-                                        <field name="doctor_id"/>
-                                        <field name="date"/>
-                                        <field name="state"/>
-                                        <field name="notes"/>
-                                    </group>
-                                </form>
-                            </field>
-                        </page>
-                    </notebook>
-
-                </sheet>
+                </form>
+            </field>
+        </page>
+    </notebook>
+</sheet>
             </form>
 
         </field>

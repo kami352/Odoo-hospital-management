@@ -13,6 +13,9 @@
     parent="menu_hospital_root"
     action="action_department"
     sequence="4"/>
+    
+
+
 </odoo>
 
 

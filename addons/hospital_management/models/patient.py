@@ -12,6 +12,15 @@ class Patient(models.Model):
         ('other', 'Other'),
     ], string='Gender')
 
+    phone = fields.Char(string='Phone', help="Mobile or landline")
+    mobile = fields.Char(string='Mobile')
+    email = fields.Char(string='Email')
+    street = fields.Char(string='Street')
+    street2 = fields.Char(string='Street2')
+    city = fields.Char(string='City')
+    zip = fields.Char(string='ZIP')
+    country_id = fields.Many2one('res.country', string='Country')
+
     # One2many relation
     appointment_ids = fields.One2many(
         'hospital.appointment',

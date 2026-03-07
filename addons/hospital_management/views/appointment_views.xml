@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- Sequence for appointment reference -->
+    <!-- Sequence -->
     <record id="seq_appointment" model="ir.sequence">
         <field name="name">Appointment Sequence</field>
         <field name="code">hospital.appointment</field>
@@ -26,32 +26,34 @@
         </field>
     </record>
 
-    <!-- Form view – with statusbar and conditional buttons (new syntax) -->
+    <!-- Form view – cleaned & correct -->
     <record id="view_appointment_form" model="ir.ui.view">
         <field name="name">hospital.appointment.form</field>
         <field name="model">hospital.appointment</field>
         <field name="arch" type="xml">
             <form>
-                <header>
-                    <!-- Status bar (visual + clickable if allowed) -->
-                    <field name="state" widget="statusbar" clickable="1"/>
-
-                    <!-- Workflow buttons: conditional visibility with direct expressions -->
-                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
-                    <button name="action_done" string="Mark as Done" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
-                    <button name="action_cancel" string="Cancel" type="object" invisible="state in ['cancel', 'done']"/>
-                    <button name="action_draft" string="Reset to Draft" type="object" invisible="state != 'cancel'"/> <!-- Optional reset -->
-                </header>
+               <header>
+    <field name="state" widget="statusbar" clickable="1"/>
+    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+    <button name="action_done" string="Mark as Done" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+    <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" invisible="state in ['cancel', 'done']"/>
+    <button name="action_draft" string="Reset to Draft" type="object" invisible="state != 'cancel'"/>
+</header>
                 <sheet>
                     <group>
                         <field name="reference" readonly="1"/>
-                        <field name="patient_id"/>
-                        <field name="doctor_id"/>
+                        <field name="patient_id" readonly="state in ['done', 'cancel']"/>
+                        <field name="doctor_id" readonly="state in ['done', 'cancel']"/>
                         <field name="department_id" readonly="1"/>
-                        <field name="date"/>
-                        <field name="state" invisible="1"/> <!-- Hidden, statusbar handles display -->
-                        <field name="notes"/>
+                        <field name="date" readonly="state in ['done', 'cancel']"/>
+                        <field name="state" invisible="1"/>
+                        <field name="notes" readonly="state in ['done', 'cancel']"/>
+                        <field name="prescription" readonly="state in ['done', 'cancel']"/>
+                        <field name="treatment_notes" readonly="state in ['done', 'cancel']"/>
                     </group>
+
+                    <!-- Cancellation info – only visible on cancel -->
+                    
                 </sheet>
             </form>
         </field>

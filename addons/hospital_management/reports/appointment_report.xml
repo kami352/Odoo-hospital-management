@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Report Action -->
+    <record id="report_appointment" model="ir.actions.report">
+        <field name="name">Appointment Report</field>
+        <field name="model">hospital.appointment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hospital_management.appointment_report_template</field>
+        <field name="report_file">hospital_management.appointment_report</field>
+        <field name="binding_model_id" ref="hospital_management.model_hospital_appointment"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/> <!-- Optional: better default format -->
+    </record>
+
+    <!-- Corrected Template with proper structure -->
+    <template id="appointment_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        
+                        <h2 class="text-center">Appointment Details</h2>
+                        <hr/>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <strong>Reference:</strong> <span t-field="o.reference"/>
+                            </div>
+                            <div class="col-6 text-right">
+                                <strong>Date:</strong> <span t-field="o.date" t-options='{"format": "dd/MM/yyyy HH:mm"}'/>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <strong>Patient:</strong> <span t-field="o.patient_id.name"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Doctor:</strong> <span t-field="o.doctor_id.name"/>
+                            </div>
+                        </div>
+
+                        <div class="row mt-1">
+                            <div class="col-6">
+                                <strong>Department:</strong> <span t-field="o.department_id.name"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Status:</strong> 
+                                <span t-esc="dict(o._fields['state'].selection).get(o.state, o.state)"/>
+                            </div>
+                        </div>
+
+                        <hr class="mt-4"/>
+
+                        <h3>Notes</h3>
+                        <div t-field="o.notes" class="mt-2"/>
+
+                        <h3>Prescription</h3>
+                        <div t-field="o.prescription" class="mt-2"/>
+
+                        <h3>Treatment Notes</h3>
+                        <div t-field="o.treatment_notes" class="mt-2"/>
+
+                        <div class="oe_structure"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>
