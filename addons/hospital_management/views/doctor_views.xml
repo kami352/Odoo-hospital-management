@@ -26,6 +26,15 @@
                         <field name="specialty"/>
                         <field name="department_id"/>
                     </group>
+
+    <group string="Working Hours">
+    <field name="working_day_ids" widget="many2many_tags"/>
+    <field name="start_time" widget="float_time"/>
+    <field name="end_time" widget="float_time"/>
+    <field name="break_start" widget="float_time"/>
+    <field name="break_end" widget="float_time"/>
+</group>
+
                 </sheet>
             </form>
         </field>

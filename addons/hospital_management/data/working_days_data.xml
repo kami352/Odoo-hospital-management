@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="working_day_monday" model="hospital.working.day">
+        <field name="name">Monday</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="working_day_tuesday" model="hospital.working.day">
+        <field name="name">Tuesday</field>
+        <field name="sequence">2</field>
+    </record>
+    <record id="working_day_wednesday" model="hospital.working.day">
+        <field name="name">Wednesday</field>
+        <field name="sequence">3</field>
+    </record>
+    <record id="working_day_thursday" model="hospital.working.day">
+        <field name="name">Thursday</field>
+        <field name="sequence">4</field>
+    </record>
+    <record id="working_day_friday" model="hospital.working.day">
+        <field name="name">Friday</field>
+        <field name="sequence">5</field>
+    </record>
+    <record id="working_day_saturday" model="hospital.working.day">
+        <field name="name">Saturday</field>
+        <field name="sequence">6</field>
+    </record>
+    <record id="working_day_sunday" model="hospital.working.day">
+        <field name="name">Sunday</field>
+        <field name="sequence">7</field>
+    </record>
+</odoo>

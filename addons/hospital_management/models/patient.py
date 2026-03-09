@@ -4,7 +4,7 @@ class Patient(models.Model):
     _name = 'hospital.patient'
     _description = 'Hospital Patient'
 
-    name = fields.Char(string='Name', required=True)
+    name = fields.Char(string='Name', required=True)  # keep required=True
     age = fields.Integer(string='Age')
     gender = fields.Selection([
         ('male', 'Male'),
@@ -12,6 +12,27 @@ class Patient(models.Model):
         ('other', 'Other'),
     ], string='Gender')
 
+    # Photo fields
+    image = fields.Image(
+        string='Photo',
+        max_width=512,
+        max_height=512,
+        verify_resolution=False
+    )
+    image_small = fields.Image(
+        string='Photo Small',
+        related='image',
+        max_width=128,
+        max_height=128,
+        store=True
+    )
+    medical_history_ids = fields.One2many(
+        'hospital.medical.history',
+        'patient_id',
+        string='Medical History'
+    )
+
+    # Contact & Address fields
     phone = fields.Char(string='Phone', help="Mobile or landline")
     mobile = fields.Char(string='Mobile')
     email = fields.Char(string='Email')
@@ -21,14 +42,12 @@ class Patient(models.Model):
     zip = fields.Char(string='ZIP')
     country_id = fields.Many2one('res.country', string='Country')
 
-    # One2many relation
+    # Appointments relation & count
     appointment_ids = fields.One2many(
         'hospital.appointment',
         'patient_id',
         string='Appointments'
     )
-
-    # Smart button count
     appointment_count = fields.Integer(
         string="Appointments",
         compute='_compute_appointment_count',
@@ -40,7 +59,6 @@ class Patient(models.Model):
         for patient in self:
             patient.appointment_count = len(patient.appointment_ids)
 
-    # Smart button action
     def action_view_appointments(self):
         return {
             'type': 'ir.actions.act_window',

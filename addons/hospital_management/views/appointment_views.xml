@@ -38,6 +38,18 @@
     <button name="action_done" string="Mark as Done" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
     <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" invisible="state in ['cancel', 'done']"/>
     <button name="action_draft" string="Reset to Draft" type="object" invisible="state != 'cancel'"/>
+    <button name="%(hospital_management.report_prescription)d" string="Print Prescription" type="action" class="oe_highlight" icon="fa-print" invisible="state not in ['confirmed', 'done']"/>
+    
+   <button name="%(hospital_management.action_cancel_appointment_wizard)d" 
+        string="Cancel" 
+        type="action" 
+        class="oe_highlight" 
+        invisible="state in ['cancel', 'done']" 
+        context="{'default_appointment_id': id}"/>
+
+   
+
+    
 </header>
                 <sheet>
                     <group>
@@ -59,11 +71,40 @@
         </field>
     </record>
 
+    <!-- Calendar View for Appointments -->
+<record id="view_appointment_calendar" model="ir.ui.view">
+    <field name="name">hospital.appointment.calendar</field>
+    <field name="model">hospital.appointment</field>
+    <field name="arch" type="xml">
+        <calendar date_start="date" 
+                  color="state" 
+                  mode="month" 
+                  event_open_popup="1" 
+                  create="true" 
+                  delete="true">
+            <field name="reference"/>
+            <field name="patient_id"/>
+            <field name="doctor_id"/>
+            <field name="department_id"/>
+            <field name="state"/>
+        </calendar>
+    </field>
+</record>
+
+
     <!-- Action -->
-    <record id="action_appointment" model="ir.actions.act_window">
-        <field name="name">Appointments</field>
-        <field name="res_model">hospital.appointment</field>
-        <field name="view_mode">list,form</field>
-    </record>
+  <record id="action_appointment" model="ir.actions.act_window">
+    <field name="name">Appointments</field>
+    <field name="res_model">hospital.appointment</field>
+    
+    <!-- Order: list first, then calendar, then form -->
+    <field name="view_mode">list,calendar,form</field>
+
+    <!-- Explicit view order – no comments inside eval -->
+    <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'list', 'view_id': ref('hospital_management.view_appointment_list')}),
+        (0, 0, {'view_mode': 'calendar', 'view_id': ref('hospital_management.view_appointment_calendar')}),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('hospital_management.view_appointment_form')})]"/>
+</record>
 
 </odoo>
