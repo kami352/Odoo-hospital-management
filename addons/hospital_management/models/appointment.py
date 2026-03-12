@@ -43,20 +43,40 @@ class Appointment(models.Model):
             vals['reference'] = self.env['ir.sequence'].next_by_code('hospital.appointment') or 'New'
         return super(Appointment, self).create(vals)
 
-    # Workflow methods called by buttons
+    # Workflow methods – now with permission check BEFORE write
     def action_confirm(self):
+        if not self.env.user.can_set_confirmed:
+            raise ValidationError(
+                "You are not allowed to set appointments to 'Confirmed' status.\n"
+                "Contact your administrator to update your permissions."
+            )
         self.write({'state': 'confirmed'})
         return True
 
     def action_done(self):
+        if not self.env.user.can_set_done:
+            raise ValidationError(
+                "You are not allowed to set appointments to 'Done' status.\n"
+                "Contact your administrator to update your permissions."
+            )
         self.write({'state': 'done'})
         return True
 
     def action_cancel(self):
+        if not self.env.user.can_set_cancel:
+            raise ValidationError(
+                "You are not allowed to set appointments to 'Cancelled' status.\n"
+                "Contact your administrator to update your permissions."
+            )
         self.write({'state': 'cancel'})
         return True
 
     def action_draft(self):
+        if not self.env.user.can_set_draft:
+            raise ValidationError(
+                "You are not allowed to set appointments to 'Draft' status.\n"
+                "Contact your administrator to update your permissions."
+            )
         self.write({'state': 'draft'})
         return True
 
@@ -68,9 +88,8 @@ class Appointment(models.Model):
 
             doctor = appointment.doctor_id
             appointment_date = appointment.date
-            appointment_weekday = appointment_date.weekday()  # 0 = Monday, 6 = Sunday
+            appointment_weekday = appointment_date.weekday()  # 0 = Monday
 
-            # Map weekday number to day name
             day_map = {
                 0: 'Monday',
                 1: 'Tuesday',
@@ -82,23 +101,22 @@ class Appointment(models.Model):
             }
             day_name = day_map.get(appointment_weekday)
 
-            # Check if doctor works on this day (using Many2many field)
+            # Check if doctor works on this day
             if not doctor.working_day_ids.filtered(lambda d: d.name == day_name):
                 raise ValidationError(
                     f"Doctor {doctor.name} does not work on {day_name}."
                 )
 
-            # Convert appointment time to float hours
+            # Time check
             appointment_hour = appointment_date.hour + appointment_date.minute / 60.0
 
-            # Check working hours
             if not (doctor.start_time <= appointment_hour <= doctor.end_time):
                 raise ValidationError(
                     f"Appointment time is outside doctor's working hours "
                     f"({doctor.start_time} - {doctor.end_time})."
                 )
 
-            # Check break time (if defined)
+            # Break time check
             if doctor.break_start and doctor.break_end:
                 if doctor.break_start <= appointment_hour <= doctor.break_end:
                     raise ValidationError(
@@ -106,10 +124,10 @@ class Appointment(models.Model):
                         f"({doctor.break_start} - {doctor.break_end})."
                     )
 
-            # Check double-booking (same doctor, overlapping time)
+            # Double-booking check (rough 1-hour window)
             overlapping = self.search([
                 ('doctor_id', '=', doctor.id),
-                ('date', '>=', appointment_date - timedelta(hours=1)),  # rough overlap check
+                ('date', '>=', appointment_date - timedelta(hours=1)),
                 ('date', '<=', appointment_date + timedelta(hours=1)),
                 ('id', '!=', appointment.id),
             ])
@@ -117,4 +135,30 @@ class Appointment(models.Model):
             if overlapping:
                 raise ValidationError(
                     f"Doctor {doctor.name} already has an appointment at this time."
+                )
+
+    # Safety net for manual state changes (dropdown)
+    @api.constrains('state')
+    def _check_user_can_change_state(self):
+        for appointment in self:
+            user = self.env.user
+            old_state = appointment._origin.state if appointment._origin else 'draft'
+            new_state = appointment.state
+
+            if new_state == old_state:
+                continue
+
+            permission_map = {
+                'draft': 'can_set_draft',
+                'confirmed': 'can_set_confirmed',
+                'done': 'can_set_done',
+                'cancel': 'can_set_cancel',
+            }
+
+            permission_field = permission_map.get(new_state)
+
+            if permission_field and not getattr(user, permission_field, False):
+                raise ValidationError(
+                    f"You are not allowed to change appointment status to '{new_state}'.\n"
+                    f"Contact your administrator to update your permissions."
                 )

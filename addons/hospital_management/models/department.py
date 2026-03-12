@@ -8,3 +8,5 @@ class Department(models.Model):
     name = fields.Char(string='Department Name', required=True)
     code = fields.Char(string='Code', size=8)               # e.g. CARDIO, NEURO
     active = fields.Boolean(default=True)
+
+    

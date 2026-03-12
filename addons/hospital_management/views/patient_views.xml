@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-    <!-- List View – FIXED -->
+    <!-- List View – unchanged, name first to avoid validator bug -->
     <record id="view_patient_list" model="ir.ui.view">
         <field name="name">hospital.patient.list</field>
         <field name="model">hospital.patient</field>
@@ -17,7 +17,7 @@
         </field>
     </record>
 
-    <!-- Form View – looks good, no change needed -->
+    <!-- Form View – cleaned up spacing -->
     <record id="view_patient_form" model="ir.ui.view">
         <field name="name">hospital.patient.form</field>
         <field name="model">hospital.patient</field>
@@ -31,88 +31,107 @@
                         </button>
                     </div>
 
-                    <!-- Two-column layout with photo on left -->
-                    <group col="3">
-                        <group colspan="1">
-                            <field name="image" widget="image" class="oe_avatar" options='{"preview_image": "image_small", "size": [256, 256]}'/>
-                        </group>
+                    <!-- Patient name as title (optional – remove <div class="oe_title"> if unwanted) -->
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
 
-                        <group colspan="2">
-                            <group string="Personal Information">
-                                <field name="name"/>
-                                <field name="age"/>
-                                <field name="gender"/>
-                                <field name="phone"/>
-                                <field name="mobile"/>
-                                <field name="email"/>
-                            </group>
+                    <!-- Tight layout: photo left, fields right -->
+                    <div class="o_form_sheet">
+                        <div class="row">
+                            <!-- Photo column – narrow, centered, minimal padding -->
+                            <div class="col-3 col-lg-2 text-center" style="padding: 0 8px;">
+                                <field name="image" 
+                                       widget="image" 
+                                       class="oe_avatar" 
+                                       options='{"preview_image": "image_small", "size": [180, 180]}'/>
+                            </div>
 
-                            <group string="Address">
-                                <field name="street"/>
-                                <field name="street2"/>
-                                <field name="city"/>
-                                <field name="zip"/>
-                                <field name="country_id"/>
-                            </group>
-                        </group>
-                    </group>
+                            <!-- Fields columns – takes remaining space -->
+                            <div class="col-9 col-lg-10" style="padding-left: 8px;">
+                                <div class="row">
+                                    <!-- Personal Information -->
+                                    <div class="col-6">
+                                        <group string="Personal Information" class="o_group_no_label">
+                                            <field name="age"/>
+                                            <field name="gender"/>
+                                            <field name="phone"/>
+                                            <field name="mobile"/>
+                                            <field name="email"/>
+                                        </group>
+                                    </div>
 
-                    <!-- Notebook / Appointments tab -->
-                    <notebook>
-                        <page string="Appointments">
-                            <field name="appointment_ids">
-                                <list editable="bottom">
-                                    <field name="reference"/>
-                                    <field name="doctor_id"/>
-                                    <field name="date"/>
-                                    <field name="state" widget="badge"/>
-                                </list>
-                                <form>
-                                    <group>
+                                    <!-- Address -->
+                                    <div class="col-6">
+                                        <group string="Address" class="o_group_no_label">
+                                            <field name="street"/>
+                                            <field name="street2"/>
+                                            <field name="city"/>
+                                            <field name="zip"/>
+                                            <field name="country_id"/>
+                                        </group>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notebook -->
+                        <notebook>
+                            <page string="Appointments">
+                                <field name="appointment_ids">
+                                    <list editable="bottom">
                                         <field name="reference"/>
                                         <field name="doctor_id"/>
                                         <field name="date"/>
-                                        <field name="state"/>
-                                        <field name="notes"/>
-                                    </group>
-                                </form>
-                            </field>
-                        </page>
+                                        <field name="state" widget="badge"/>
+                                    </list>
+                                    <form>
+                                        <group>
+                                            <field name="reference"/>
+                                            <field name="doctor_id"/>
+                                            <field name="date"/>
+                                            <field name="state"/>
+                                            <field name="notes"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
 
-
-                        <page string="Medical History">
-        <field name="medical_history_ids">
-            <list editable="bottom">
-                <field name="date"/>
-                <field name="doctor_id"/>
-                <field name="diagnosis"/>
-                <field name="treatment"/>
-                <field name="allergy" widget="boolean_toggle"/>
-                <field name="allergy_description" optional="hide"/>
-                <field name="notes" optional="hide"/>
-            </list>
-            <form>
-                <sheet>
-                    <group>
-                        <group>
-                            <field name="date"/>
-                            <field name="doctor_id"/>
-                            <field name="diagnosis"/>
-                        </group>
-                        <group>
-                            <field name="treatment"/>
-                            <field name="allergy"/>
-                            <field name="allergy_description" attrs="{'invisible': [('allergy', '=', False)]}"/>
-                        </group>
-                    </group>
-                    <group>
-                        <field name="notes"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </page>
-                    </notebook>
+                            <page string="Medical History">
+                                <field name="medical_history_ids">
+                                    <list editable="bottom">
+                                        <field name="date"/>
+                                        <field name="doctor_id"/>
+                                        <field name="diagnosis"/>
+                                        <field name="treatment"/>
+                                        <field name="allergy" widget="boolean_toggle"/>
+                                        <field name="allergy_description" optional="hide"/>
+                                        <field name="notes" optional="hide"/>
+                                    </list>
+                                    <form>
+                                        <sheet>
+                                            <group>
+                                                <group>
+                                                    <field name="date"/>
+                                                    <field name="doctor_id"/>
+                                                    <field name="diagnosis"/>
+                                                </group>
+                                                <group>
+                                                    <field name="treatment"/>
+                                                    <field name="allergy"/>
+                                                    <!-- Odoo 18 syntax for conditional visibility -->
+                                                    <field name="allergy_description" invisible="not allergy"/>
+                                                </group>
+                                            </group>
+                                            <group>
+                                                <field name="notes"/>
+                                            </group>
+                                        </sheet>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                    </div>
                 </sheet>
             </form>
         </field>

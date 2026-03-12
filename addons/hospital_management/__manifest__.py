@@ -8,7 +8,8 @@
     'depends': ['base'],  # Depends on Odoo's base module (always needed).
     'data': [
     'security/ir.model.access.csv',
-
+'views/res_users_views.xml',
+   
     'views/cancel_wizard_views.xml',
     'views/patient_views.xml',
     'views/doctor_views.xml',
