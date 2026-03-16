@@ -13,45 +13,58 @@
         <field name="paperformat_id" ref="base.paperformat_euro"/>
     </record>
 
-    <!-- Simple Prescription Template -->
+    <!-- Corrected Prescription Template -->
     <template id="prescription_template">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page">
-                        <h2 class="text-center">Prescription</h2>
-                        <hr/>
 
-                        <div class="row mt-3">
-                            <div class="col-6">
-                                <strong>Patient:</strong> <span t-field="o.patient_id.name"/>
-                            </div>
-                            <div class="col-6 text-right">
-                                <strong>Date:</strong> <span t-field="o.date" t-options='{"format": "dd/MM/yyyy HH:mm"}'/>
+                        <!-- Header with optional logo -->
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                            
+                            <div style="text-align:right;">
+                                <h2 style="margin:0; color:#4a4a8c;">Prescription</h2>
+                                <p style="margin:0; font-size:12px; color:#666;">Date: <span t-field="o.date" t-options='{"format": "dd/MM/yyyy"}'/></p>
                             </div>
                         </div>
 
-                        <div class="row mt-2">
-                            <div class="col-6">
-                                <strong>Doctor:</strong> <span t-field="o.doctor_id.name"/>
+                        <!-- Patient & Doctor Info -->
+                        <table style="width:100%; margin-bottom:20px; border-collapse:collapse;">
+                            <tr>
+                                <td style="width:50%; padding:5px;"><strong>Patient:</strong> <span t-field="o.patient_id.name"/></td>
+                                <td style="width:50%; padding:5px;"><strong>Doctor:</strong> <span t-field="o.doctor_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:5px;"><strong>Age:</strong> <span t-field="o.patient_id.age"/></td>
+                                <td style="padding:5px;"><strong>Department:</strong> <span t-field="o.department_id.name"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:5px;"><strong>Gender:</strong> <span t-field="o.patient_id.gender"/></td>
+                                <td style="padding:5px;"><strong>Status:</strong> <span t-esc="dict(o._fields['state'].selection).get(o.state, o.state)"/></td>
+                            </tr>
+                        </table>
+
+                        <hr style="border:1px solid #ccc; margin:10px 0;"/>
+
+                        <!-- Prescription Section -->
+                        <h3 style="color:#4a4a8c; border-bottom:1px solid #ccc; padding-bottom:4px;">Prescription</h3>
+                        <div t-field="o.prescription" style="min-height:150px; white-space: pre-wrap; margin-bottom:20px; padding:8px; border:1px solid #ddd; background-color:#f9f9f9;"/>
+
+                        <!-- Additional Notes -->
+                        <h3 style="color:#4a4a8c; border-bottom:1px solid #ccc; padding-bottom:4px; margin-top:20px;">Additional Notes</h3>
+                        <div t-field="o.notes" style="min-height:100px; white-space: pre-wrap; margin-bottom:20px; padding:8px; border:1px solid #ddd; background-color:#f9f9f9;"/>
+
+                        <!-- Doctor Signature -->
+                        <div style="margin-top:30px; display:flex; justify-content:space-between;">
+                            <div>
+                                <p><strong>Doctor Signature:</strong> ___________________________</p>
                             </div>
-                            <div class="col-6">
-                                <strong>Department:</strong> <span t-field="o.department_id.name"/>
+                            <div style="text-align:right;">
+                                <p><strong>Date:</strong> <span t-field="o.date" t-options='{"format": "dd/MM/yyyy"}'/></p>
                             </div>
                         </div>
 
-                        <hr class="mt-4 mb-4"/>
-
-                        <h3>Prescription</h3>
-                        <div t-field="o.prescription" style="min-height: 150px; white-space: pre-wrap;"/>
-
-                        <h3>Additional Notes</h3>
-                        <div t-field="o.notes" style="min-height: 100px; white-space: pre-wrap;"/>
-
-                        <div class="mt-5 text-center">
-                            <p><strong>Doctor Signature:</strong> ___________________________</p>
-                            <p><strong>Date:</strong> <span t-field="o.date" t-options='{"format": "dd/MM/yyyy"}'/></p>
-                        </div>
                     </div>
                 </t>
             </t>

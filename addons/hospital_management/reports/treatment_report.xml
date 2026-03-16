@@ -25,21 +25,25 @@
 
                         <table class="table table-bordered table-sm">
                             <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Doctor</th>
-                                    <th>Treatment Type</th>
-                                    <th>Duration (min)</th>
-                                    <th>Pain Before</th>
-                                    <th>Pain After</th>
-                                    <th>Progress</th>
-                                    <th>Notes</th>
+                                 <tr style="background-color:#ADA8E9; border-bottom:2px solid #888;">
+                                    <th style="font-weight:bold;">Date</th>
+                                    <th style="font-weight:bold;">Patient</th>
+                                    <th style="font-weight:bold;">Doctor</th>
+                                    <th style="font-weight:bold;">Treatment Type</th>
+                                    <th style="font-weight:bold;">Duration (min)</th>
+                                    <th style="font-weight:bold;">Pain Before</th>
+                                    <th style="font-weight:bold;">Pain After</th>
+                                    <th style="font-weight:bold;">Progress</th>
+                                    <th style="font-weight:bold;">Notes</th>
+                                     
                                 </tr>
                             </thead>
+
                             <tbody>
                                 <t t-foreach="patient.treatment_session_ids" t-as="session">
                                     <tr>
                                         <td><span t-field="session.date" t-options='{"format": "dd/MM/yyyy HH:mm"}'/></td>
+                                         <td><span t-field="session.patient_id.name"/></td>
                                         <td><span t-field="session.doctor_id.name"/></td>
                                         <td><span t-field="session.treatment_type"/></td>
                                         <td><span t-field="session.duration_minutes"/></td>
@@ -47,11 +51,15 @@
                                         <td><span t-field="session.pain_after"/></td>
                                         <td><span t-field="session.progress"/></td>
                                         <td><span t-field="session.notes"/></td>
+
+                                       
+
+                                        
                                     </tr>
                                 </t>
                                 <t t-if="not patient.treatment_session_ids">
                                     <tr>
-                                        <td colspan="8" class="text-center">No treatment sessions recorded yet.</td>
+                                        <td colspan="9" class="text-center">No treatment sessions recorded yet.</td>
                                     </tr>
                                 </t>
                             </tbody>

@@ -1,7 +1,7 @@
 from odoo import fields, models
 from odoo.exceptions import ValidationError
 
-class AppointmentCancelWizard(models.TransientModel):
+class AppointmentCancelWizard(models.TransientModel): 
     _name = 'hospital.appointment.cancel.wizard'
     _description = 'Cancel Appointment Wizard'
 
@@ -9,13 +9,13 @@ class AppointmentCancelWizard(models.TransientModel):
     reason = fields.Text(string='Cancellation Reason', required=True)
 
     def action_confirm_cancel(self):
-        self.ensure_one()
+        self.ensure_one() 
 
-        # IMPORTANT: Check permission BEFORE doing anything
-        if not self.env.user.can_set_cancel:
+        # IMPORTANT: Check permission BEFORE doing anything 
+        if not self.env.user.can_set_cancel: 
             raise ValidationError(
                 "You are not allowed to cancel appointments.\n"
-                "Contact your administrator to update your permissions."
+                "Contact your administrator to update your permissions." 
             )
 
         # Check reason is filled
