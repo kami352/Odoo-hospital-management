@@ -11,6 +11,9 @@ class Appointment(models.Model):
     reference = fields.Char(string='Reference', default='New', readonly=True)
     patient_id = fields.Many2one('hospital.patient', string='Patient', required=True)
     doctor_id = fields.Many2one('hospital.doctor', string='Doctor', required=True)
+
+    treatment_session_ids = fields.One2many('hospital.treatment.session', 'appointment_id', string='Treatment Sessions')
+    
     department_id = fields.Many2one(
         'hospital.department',
         string='Department',
@@ -43,7 +46,7 @@ class Appointment(models.Model):
             vals['reference'] = self.env['ir.sequence'].next_by_code('hospital.appointment') or 'New'
         return super(Appointment, self).create(vals)
 
-    # Workflow methods – now with permission check BEFORE write
+    # Workflow buttons – check permission BEFORE writing state
     def action_confirm(self):
         if not self.env.user.can_set_confirmed:
             raise ValidationError(
@@ -101,13 +104,11 @@ class Appointment(models.Model):
             }
             day_name = day_map.get(appointment_weekday)
 
-            # Check if doctor works on this day
             if not doctor.working_day_ids.filtered(lambda d: d.name == day_name):
                 raise ValidationError(
                     f"Doctor {doctor.name} does not work on {day_name}."
                 )
 
-            # Time check
             appointment_hour = appointment_date.hour + appointment_date.minute / 60.0
 
             if not (doctor.start_time <= appointment_hour <= doctor.end_time):
@@ -116,7 +117,6 @@ class Appointment(models.Model):
                     f"({doctor.start_time} - {doctor.end_time})."
                 )
 
-            # Break time check
             if doctor.break_start and doctor.break_end:
                 if doctor.break_start <= appointment_hour <= doctor.break_end:
                     raise ValidationError(
@@ -124,7 +124,6 @@ class Appointment(models.Model):
                         f"({doctor.break_start} - {doctor.break_end})."
                     )
 
-            # Double-booking check (rough 1-hour window)
             overlapping = self.search([
                 ('doctor_id', '=', doctor.id),
                 ('date', '>=', appointment_date - timedelta(hours=1)),
@@ -137,7 +136,6 @@ class Appointment(models.Model):
                     f"Doctor {doctor.name} already has an appointment at this time."
                 )
 
-    # Safety net for manual state changes (dropdown)
     @api.constrains('state')
     def _check_user_can_change_state(self):
         for appointment in self:

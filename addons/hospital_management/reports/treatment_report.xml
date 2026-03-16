@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Report Action -->
+   <record id="action_report_treatment_history" model="ir.actions.report">
+    <field name="name">Treatment History</field>
+    <field name="model">hospital.patient</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">hospital_management.treatment_history_template</field>
+    <field name="report_file">hospital_management.treatment_history</field>
+    <field name="binding_model_id" ref="hospital_management.model_hospital_patient"/>
+    <field name="binding_type">report</field>
+    <field name="paperformat_id" ref="base.paperformat_euro"/>
+</record>
+
+    <!-- Template -->
+    <template id="treatment_history_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="patient">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="text-center">Treatment History - <span t-field="patient.name"/></h2>
+                        <p class="text-center">Generated on <span t-esc="context_timestamp(datetime.datetime.now())"/></p>
+                        <hr/>
+
+                        <table class="table table-bordered table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Doctor</th>
+                                    <th>Treatment Type</th>
+                                    <th>Duration (min)</th>
+                                    <th>Pain Before</th>
+                                    <th>Pain After</th>
+                                    <th>Progress</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="patient.treatment_session_ids" t-as="session">
+                                    <tr>
+                                        <td><span t-field="session.date" t-options='{"format": "dd/MM/yyyy HH:mm"}'/></td>
+                                        <td><span t-field="session.doctor_id.name"/></td>
+                                        <td><span t-field="session.treatment_type"/></td>
+                                        <td><span t-field="session.duration_minutes"/></td>
+                                        <td><span t-field="session.pain_before"/></td>
+                                        <td><span t-field="session.pain_after"/></td>
+                                        <td><span t-field="session.progress"/></td>
+                                        <td><span t-field="session.notes"/></td>
+                                    </tr>
+                                </t>
+                                <t t-if="not patient.treatment_session_ids">
+                                    <tr>
+                                        <td colspan="8" class="text-center">No treatment sessions recorded yet.</td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

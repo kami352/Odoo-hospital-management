@@ -28,6 +28,13 @@
                     <div class="oe_button_box" name="button_box">
                         <button name="action_view_appointments" type="object" class="oe_stat_button" icon="fa-calendar">
                             <field name="appointment_count" widget="statinfo" string="Appointments"/>
+
+                            <button name="%(hospital_management.action_report_treatment_history)d"
+            string="Print Treatment History"
+            type="action"
+            class="oe_stat_button"
+            icon="fa-file-pdf-o"/>
+
                         </button>
                     </div>
 
@@ -130,6 +137,42 @@
                                     </form>
                                 </field>
                             </page>
+
+                   <page string="Treatment History">
+    <field name="treatment_session_ids">
+        <list>
+            <field name="date" optional="show"/>
+            <field name="doctor_id" optional="show"/>
+            <field name="treatment_type"/>
+            <field name="duration_minutes"/>
+            <field name="pain_before"/>
+            <field name="pain_after"/>
+            <field name="progress"/>
+            <field name="notes" optional="hide"/>
+        </list>
+        <form>
+            <sheet>
+                <group>
+                    <group>
+                        <field name="date"/>
+                        <field name="doctor_id" readonly="1"/>
+                        <field name="treatment_type"/>
+                        <field name="duration_minutes"/>
+                    </group>
+                    <group>
+                        <field name="pain_before"/>
+                        <field name="pain_after"/>
+                        <field name="progress"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="notes"/>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</page>
+
                         </notebook>
                     </div>
                 </sheet>

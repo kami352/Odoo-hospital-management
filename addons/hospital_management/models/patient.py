@@ -48,11 +48,19 @@ class Patient(models.Model):
         'patient_id',
         string='Appointments'
     )
+
+    
     appointment_count = fields.Integer(
         string="Appointments",
         compute='_compute_appointment_count',
         store=True
     )
+
+    treatment_session_ids = fields.One2many(
+    'hospital.treatment.session',
+    'patient_id',
+    string='Treatment Sessions'
+)
 
     @api.depends('appointment_ids')
     def _compute_appointment_count(self):

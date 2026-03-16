@@ -6,6 +6,7 @@ from . import res_users
 from . import cancel_wizard
 from . import medical_history
 from . import working_day
+from . import treatment_session
 
 
 
